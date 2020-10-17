@@ -6,6 +6,8 @@
 A mmorpg for a discord server. List of features:
 
 - :briefcase: Different races
+- :robot: Set a default room for your bot
+- :up: Level with EXP system to increase your power
 - :sparkles: Daily rewards
 - :dagger: Attack monsters or other players
 - :hocho: Mine

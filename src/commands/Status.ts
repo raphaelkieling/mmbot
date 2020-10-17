@@ -20,6 +20,7 @@ class StatusCommand implements ICommand {
 **Your current status**
 :hearts: ${user.currentLife}/${user.maxLife}
 :coin: ${user.gold.toFixed(2)} gold
+:level_slider: ${user.level.level}
 :chart_with_upwards_trend: ${user.currentExp.toFixed(2)} EXP
 :gloves: ${user.race.name}
 :dagger: ${user.race.strength} 

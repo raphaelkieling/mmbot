@@ -1,24 +1,29 @@
-import config from "../config";
+import { Client } from "discord.js";
 import Player, { IPlayer } from "../database/models/Player";
+import LevelEvolution, {
+  ILevelEvolution,
+} from "../database/models/LevelEvolution";
 import ItemService from "./ItemService";
 import RaceService from "./RaceService";
 
 export default class PlayerService {
   constructor(
     private raceService: RaceService,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private client: Client
   ) {}
 
   async createNewPlayer({ serverId, discordId, raceKey }) {
     const raceFounded = await this.raceService.getByRaceKey(raceKey);
+    const levelEvolutionFounded = await this.getLevelEvolutionByLevel(1);
 
     const createdPlayer = await Player.create({
       discordId,
       serverId,
-      level: 0,
       currentExp: 0,
       createdAt: new Date(),
       race: raceFounded.id,
+      level: levelEvolutionFounded.id,
       gold: 300,
       dieCount: 0,
       currentLife: 100,
@@ -28,8 +33,15 @@ export default class PlayerService {
     return createdPlayer;
   }
 
+  getLevelEvolutionByLevel(level: number) {
+    return LevelEvolution.findOne({ level }).exec();
+  }
+
   getUserByDiscordId({ discordId, serverId }): Promise<IPlayer> {
-    return Player.findOne({ discordId, serverId }).populate("race").exec();
+    return Player.findOne({ discordId, serverId })
+      .populate("race")
+      .populate("level")
+      .exec();
   }
 
   private roll(min = 0, maxValue = 100): number {
@@ -69,6 +81,18 @@ export default class PlayerService {
       exp,
       item: bestChange,
     };
+  }
+
+  async getCurrentLevelByExp(exp: number): Promise<ILevelEvolution> {
+    const levelEvolutions = await LevelEvolution.find()
+      .sort({ level: -1 })
+      .exec();
+
+    const currentLevel = levelEvolutions.find(
+      (item) => item.expRequired <= exp
+    );
+
+    return currentLevel;
   }
 
   erasePlayer({ discordId, serverId }) {

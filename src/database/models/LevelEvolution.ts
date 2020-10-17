@@ -2,13 +2,16 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface ILevelEvolution extends Document {
   level: number;
-  expRequired: string;
+  expRequired: number;
 }
 
-const LevelEvolutionSchema: Schema = new Schema({
-  level: { type: String, required: true },
-  expRequired: { type: String, required: true },
-});
+const LevelEvolutionSchema: Schema = new Schema(
+  {
+    level: { type: Number, required: true },
+    expRequired: { type: Number, required: true },
+  },
+  { collection: "levelEvolutions" }
+);
 
 export default mongoose.model<ILevelEvolution>(
   "LevelEvolution",

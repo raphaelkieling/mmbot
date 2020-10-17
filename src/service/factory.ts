@@ -1,3 +1,4 @@
+import { Client } from "discord.js";
 import ItemService from "./ItemService";
 import PlayerService from "./PlayerService";
 import RaceService from "./RaceService";
@@ -10,6 +11,6 @@ export function createRaceService(): RaceService {
   return new RaceService();
 }
 
-export function createPlayerService(): PlayerService {
-  return new PlayerService(createRaceService(), createItemService());
+export function createPlayerService(client: Client): PlayerService {
+  return new PlayerService(createRaceService(), createItemService(), client);
 }

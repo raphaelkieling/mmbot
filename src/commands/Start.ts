@@ -7,8 +7,10 @@ import RaceService from "../service/RaceService";
 import ICommand from "./ICommand";
 
 class StartCommand implements ICommand {
-  playerService = new PlayerService();
-  raceService = new RaceService();
+  constructor(
+    private playerService: PlayerService,
+    private raceService: RaceService
+  ) {}
 
   async withoutRace(message: Message) {
     const races = await this.raceService.getAll();

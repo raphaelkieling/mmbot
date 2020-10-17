@@ -4,13 +4,13 @@ import PlayerService from "../service/PlayerService";
 import ICommand from "./ICommand";
 
 class ResetCommand implements ICommand {
-  playerService = new PlayerService();
+  constructor(private playerService: PlayerService) {}
 
   async execute(message: Message, confirm: string) {
     const defaultMessageToConfirm = "i-really-want-that";
 
     if (!confirm || confirm !== defaultMessageToConfirm) {
-      message.reply(`
+      return message.reply(`
 For reset you account you need type \`${config.PREFIX}reset ${defaultMessageToConfirm}\`
 `);
     }

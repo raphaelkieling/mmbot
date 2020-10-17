@@ -4,8 +4,10 @@ import ItemService from "./ItemService";
 import RaceService from "./RaceService";
 
 export default class PlayerService {
-  raceService = new RaceService();
-  itemsService = new ItemService();
+  constructor(
+    private raceService: RaceService,
+    private itemService: ItemService
+  ) {}
 
   async createNewPlayer({ serverId, discordId, raceKey }) {
     const raceFounded = await this.raceService.getByRaceKey(raceKey);
@@ -35,7 +37,7 @@ export default class PlayerService {
   }
 
   async doMine({ discordId, serverId }) {
-    const items = await this.itemsService.getAllOres();
+    const items = await this.itemService.getAllOres();
     const diceValue = this.roll();
     const bestChange = items.reduce((acc, curr) => {
       if (curr.attributes["chance_percent"] >= diceValue) {

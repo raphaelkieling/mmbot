@@ -3,6 +3,7 @@ import commands from "./commands";
 import config from "./config";
 import extractor from "./utils/extractor";
 import database from "./database";
+import "./listeners";
 
 const client = new Discord.Client();
 

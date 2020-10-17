@@ -4,7 +4,7 @@ import PlayerService from "../service/PlayerService";
 import ICommand from "./ICommand";
 
 class StatusCommand implements ICommand {
-  playerService = new PlayerService();
+  constructor(private playerService: PlayerService) {}
 
   private getUser({ discordId, serverId }): Promise<IPlayer> {
     return this.playerService.getUserByDiscordId({ discordId, serverId });

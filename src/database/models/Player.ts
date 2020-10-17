@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
+import emitter from "../../listeners/emitter";
 import { IRace } from "./Race";
+
+export const playerListeners = {
+  CHECK_EXP: "PLAYER:CHECK-EXP",
+};
 
 export interface IPlayer extends Document {
   discordId: string;
@@ -14,7 +19,7 @@ export interface IPlayer extends Document {
   maxLife: number;
 }
 
-const PlayerSchema: Schema = new Schema({
+const PlayerSchema: Schema<IPlayer> = new Schema({
   discordId: { type: String, required: true },
   serverId: { type: String, required: true },
   level: { type: Number },
@@ -25,6 +30,12 @@ const PlayerSchema: Schema = new Schema({
   createdAt: { type: Date, required: true },
   dieCount: { type: Number, default: 0 },
   race: { type: Schema.Types.ObjectId, required: true, ref: "Race" },
+});
+
+PlayerSchema.post("updateOne", async function () {
+  const docToUpdate = await this.model.findOne(this.getQuery());
+  if (!docToUpdate) return;
+  emitter.emit(playerListeners.CHECK_EXP, docToUpdate);
 });
 
 export default mongoose.model<IPlayer>("Player", PlayerSchema);

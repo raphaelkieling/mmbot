@@ -5,10 +5,15 @@ import StartCommand from "./Start";
 import ResetCommand from "./Reset";
 import MineCommand from "./Mine";
 import StatusCommand from "./Status";
-import { createPlayerService, createRaceService } from "../service/factory";
+import {
+  createPlayerService,
+  createRaceService,
+  createServerManagerRoomService,
+} from "../service/factory";
 import IMiddleware from "./guards/IMiddleware";
 import needAccountMiddleware from "./guards/needAccount";
 import { Client, Message } from "discord.js";
+import SetBotRoomCommand from "./SetBotRoom";
 
 /**
  * Run the guard middlewares to validate if the user can continue
@@ -18,14 +23,14 @@ import { Client, Message } from "discord.js";
  */
 function runGuards(middlewares: IMiddleware[], command: ICommand): ICommand {
   return {
-    async execute(message: Message, ...args:any) {
+    async execute(message: Message, ...args: any) {
       for (const middleware of middlewares) {
         const canContinue = await middleware(message);
         if (!canContinue) throw new Error("Guard blocked");
       }
 
       // Final command
-      command.execute(message,...args);
+      command.execute(message, ...args);
     },
   };
 }
@@ -33,6 +38,7 @@ function runGuards(middlewares: IMiddleware[], command: ICommand): ICommand {
 export default (client: Client) => {
   const playerService = createPlayerService(client);
   const raceService = createRaceService();
+  const serverManageRoom = createServerManagerRoomService();
 
   return {
     ping: new PingCommand(),
@@ -43,6 +49,10 @@ export default (client: Client) => {
     status: runGuards(
       [needAccountMiddleware],
       new StatusCommand(playerService)
+    ),
+    "set-bot-room": runGuards(
+      [needAccountMiddleware],
+      new SetBotRoomCommand(serverManageRoom)
     ),
   } as Record<string, ICommand>;
 };

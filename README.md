@@ -5,6 +5,7 @@
 
 A mmorpg for a discord server. List of features:
 
+- :briefcase: Different races
 - :sparkles: Daily rewards
 - :dagger: Attack monsters or other players
 - :hocho: Mine
